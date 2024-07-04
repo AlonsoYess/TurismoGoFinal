@@ -1,0 +1,6 @@
+@Turismo.Presentation.WebServices_HostAddress = http://localhost:5187
+
+GET {{Turismo.Presentation.WebServices_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

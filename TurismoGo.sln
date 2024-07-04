@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34018.315
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Turismo.Domain.Entities", "Turismo.Domain.Entities\Turismo.Domain.Entities.csproj", "{A6DD3FD2-43CE-417B-A9F3-002B19F7C9F9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Turismo.Infraestructure.EFDataContext", "Turismo.Infraestructure.EFDataContext\Turismo.Infraestructure.EFDataContext.csproj", "{362576CC-F2E9-4E0F-B7CD-A2D0634BDD27}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Turismo.Services.Implementation", "Turismo.Services.Implementation\Turismo.Services.Implementation.csproj", "{C5797D15-F182-4227-B042-36F2336903CD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Turismo.Services.Interfaces", "Turismo.Services.Interfaces\Turismo.Services.Interfaces.csproj", "{3AD77D3B-D8D4-4966-818C-49F3790FA743}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Turismo.Presentation.WebServices", "Turismo.Presentation.WebServices\Turismo.Presentation.WebServices.csproj", "{CCDFC2E1-8B2A-4B3C-AAC8-0A63A01182B0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A6DD3FD2-43CE-417B-A9F3-002B19F7C9F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6DD3FD2-43CE-417B-A9F3-002B19F7C9F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6DD3FD2-43CE-417B-A9F3-002B19F7C9F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6DD3FD2-43CE-417B-A9F3-002B19F7C9F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{362576CC-F2E9-4E0F-B7CD-A2D0634BDD27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{362576CC-F2E9-4E0F-B7CD-A2D0634BDD27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{362576CC-F2E9-4E0F-B7CD-A2D0634BDD27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{362576CC-F2E9-4E0F-B7CD-A2D0634BDD27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5797D15-F182-4227-B042-36F2336903CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5797D15-F182-4227-B042-36F2336903CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5797D15-F182-4227-B042-36F2336903CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5797D15-F182-4227-B042-36F2336903CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3AD77D3B-D8D4-4966-818C-49F3790FA743}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AD77D3B-D8D4-4966-818C-49F3790FA743}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AD77D3B-D8D4-4966-818C-49F3790FA743}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3AD77D3B-D8D4-4966-818C-49F3790FA743}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCDFC2E1-8B2A-4B3C-AAC8-0A63A01182B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCDFC2E1-8B2A-4B3C-AAC8-0A63A01182B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCDFC2E1-8B2A-4B3C-AAC8-0A63A01182B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCDFC2E1-8B2A-4B3C-AAC8-0A63A01182B0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {88F3EAFF-D35C-4C7F-A375-8FF4E061B44B}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Turismo.Domain.Entities\Turismo.Domain.Entities.csproj" />
+    <ProjectReference Include="..\Turismo.Infraestructure.EFDataContext\Turismo.Infraestructure.EFDataContext.csproj" />
+    <ProjectReference Include="..\Turismo.Services.Interfaces\Turismo.Services.Interfaces.csproj" />
+  </ItemGroup>
+
+</Project>
