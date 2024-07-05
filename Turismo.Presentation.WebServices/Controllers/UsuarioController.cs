@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using Turismo.Domain.Entities.Entidades;
 using Turismo.Presentation.WebServices.DTO;
 using Turismo.Services.Interfaces.Interfaces;
@@ -14,12 +18,14 @@ namespace Turismo.Presentation.WebServices.Controllers
         private readonly UserManager<Usuario> _userManager;
         private readonly SignInManager<Usuario> _signInManager;
         private readonly ITokenService _tokenService;
+        private readonly IConfiguration _configuration;
 
-        public UsuarioController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager, ITokenService tokenService)
+        public UsuarioController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager, ITokenService tokenService, IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenService = tokenService;
+            _configuration = configuration;
         }
 
         [HttpPost("registrar")]
@@ -43,13 +49,7 @@ namespace Turismo.Presentation.WebServices.Controllers
                 return BadRequest(resultado.Errors);
             }
 
-            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
-
-            // Generar el token de acceso y el refresh token
-            var (accessToken, refreshToken) = await _tokenService.GenerarToken(usuario, ipAddress);
-
-            // Asocia el refresh token al usuario
-            usuario.RefreshTokens.Add(refreshToken);
+            var tokenGenerado = await ConstruirToken(usuario);
 
 
             return new UsuarioDTO
@@ -57,7 +57,7 @@ namespace Turismo.Presentation.WebServices.Controllers
                 Id = usuario.Id,
                 Nombre = usuario.Nombre,
                 Apellido = usuario.Apellido,
-                Token = accessToken,
+                Token = tokenGenerado.Token,
                 Email = usuario.Email,
                 NroDocumento = usuario.NroDocumento
             };
@@ -72,8 +72,14 @@ namespace Turismo.Presentation.WebServices.Controllers
                 return BadRequest(ModelState.Values);
             }*/
             //var usuario = await _userManager.FindByEmailAsync(loginDto.Email);
-            var usuario = await _userManager.FindByNameAsync(loginDto.NroDocumento);
+            var usuario = await _userManager.FindByNameAsync(loginDto.Usuario);
+
             if (usuario == null)
+            {
+                return Unauthorized();
+            }
+
+            if (loginDto.TipoUsuario != usuario.TipoUsuario)
             {
                 return Unauthorized();
             }
@@ -85,44 +91,56 @@ namespace Turismo.Presentation.WebServices.Controllers
                 return Unauthorized(resultado);
             }
 
-            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
-            var (accessToken, refreshToken) = await _tokenService.GenerarToken(usuario, ipAddress);
+            
 
-            // Asocia el refresh token al usuario
-            usuario.RefreshTokens.Add(refreshToken);
-            await _userManager.UpdateAsync(usuario);
-
-
-            // Configura la cookie para el token de acceso
-            Response.Cookies.Append("access_token", accessToken, new CookieOptions
-            {
-                HttpOnly = true, // Hace que la cookie no sea accesible desde JavaScript
-                Secure = true,   // Solo si estás utilizando HTTPS
-                SameSite = SameSiteMode.Strict, // Configura SameSite según tus necesidades
-                                                // Otras opciones de configuración de cookies según tus necesidades
-            });
-
-            // Configura la cookie para el token de acceso
-            Response.Cookies.Append("refresh_token", refreshToken.Token, new CookieOptions
-            {
-                HttpOnly = true, // Hace que la cookie no sea accesible desde JavaScript
-                Secure = true,   // Solo si estás utilizando HTTPS
-                SameSite = SameSiteMode.Strict, // Configura SameSite según tus necesidades
-                                                // Otras opciones de configuración de cookies según tus necesidades
-            });
-
-            //var roles = await _userManager.GetRolesAsync(usuario);
+            var tokenGenerado = await ConstruirToken(usuario);
 
             return new UsuarioDTO
             {
                 Id = usuario.Id,
                 Nombre = usuario.Nombre,
                 Apellido = usuario.Apellido,
-                Token = accessToken,
+                Token = tokenGenerado.Token,
                 Email = usuario.Email,
-                NroDocumento = usuario.UserName,
-                RefreshToken = refreshToken.Token
+                NroDocumento = usuario.UserName
             };
+        }
+
+
+        private async Task<UserToken> ConstruirToken(Usuario userInfo)
+        {
+            var claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.Name, userInfo.Email),
+                new Claim(ClaimTypes.Email, userInfo.Email),
+            };
+
+            var identityUser = await _userManager.FindByEmailAsync(userInfo.Email);
+
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, identityUser.Id));
+
+            var claimsDB = await _userManager.GetClaimsAsync(identityUser);
+
+            claims.AddRange(claimsDB);
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Token:Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var expiracion = DateTime.UtcNow.AddYears(1);
+
+            JwtSecurityToken token = new JwtSecurityToken(
+                issuer: null,
+                audience: null,
+                claims: claims,
+                expires: expiracion,
+                signingCredentials: creds);
+
+            return new UserToken()
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                Expiracion = expiracion
+            };
+
         }
 
     }

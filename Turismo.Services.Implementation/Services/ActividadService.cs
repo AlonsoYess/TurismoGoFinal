@@ -44,6 +44,7 @@ namespace Turismo.Services.Implementation.Services
             actividadExistente.FechaFin = actividad.FechaFin;
             actividadExistente.Precio = actividad.Precio;
             actividadExistente.Capacidad = actividad.Capacidad;
+            actividadExistente.Imagen = actividad.Imagen;
 
             try
             {
@@ -67,6 +68,7 @@ namespace Turismo.Services.Implementation.Services
                 FechaFin = actividadExistente.FechaFin,
                 Precio = actividadExistente.Precio,
                 Capacidad = actividadExistente.Capacidad,
+                Imagen = actividadExistente.Imagen,
                 Reservas = actividadExistente?.Reservas?.Select(r => new ReservaCreada
                 {
                     Usuario = r.Usuario.Nombre,
@@ -143,6 +145,7 @@ namespace Turismo.Services.Implementation.Services
                 FechaFin = a.FechaFin,
                 Precio = a.Precio,
                 Capacidad = a.Capacidad,
+                Imagen = a.Imagen,
                 Reservas = a.Reservas.Select(r => new ReservaCreada
                 {
                     Usuario = r.Usuario.Nombre,
@@ -188,7 +191,8 @@ namespace Turismo.Services.Implementation.Services
                 FechaInicio = actividad.FechaInicio,
                 FechaFin = actividad.FechaFin,
                 Precio = actividad.Precio,
-                Capacidad = actividad.Capacidad
+                Capacidad = actividad.Capacidad,
+                Imagen = actividad.Imagen,
             };
 
             try
@@ -210,7 +214,8 @@ namespace Turismo.Services.Implementation.Services
                 FechaInicio = nuevaActividad.FechaInicio,
                 FechaFin = nuevaActividad.FechaFin,
                 Precio = nuevaActividad.Precio,
-                Capacidad = nuevaActividad.Capacidad
+                Capacidad = nuevaActividad.Capacidad,
+                Imagen= nuevaActividad.Imagen,
             };
         }
 
@@ -244,6 +249,7 @@ namespace Turismo.Services.Implementation.Services
                 FechaFin = actividad.FechaFin,
                 Precio = actividad.Precio,
                 Capacidad = actividad.Capacidad,
+                Imagen = actividad.Imagen,
                 Reservas = actividad.Reservas.Select(r => new ReservaCreada
                 {
                     Usuario = r.Usuario.Nombre,
@@ -292,6 +298,8 @@ namespace Turismo.Services.Implementation.Services
                 FechaFin = a.FechaFin,
                 Precio = a.Precio,
                 Capacidad = a.Capacidad,
+                Imagen = a.Imagen,
+                ImagenURL = Path.Combine(Directory.GetCurrentDirectory(), "imagenes", a.Imagen),
                 Reservas = a.Reservas.Select(r => new ReservaCreada
                 {
                     Usuario = r.Usuario.Nombre,
@@ -333,6 +341,8 @@ namespace Turismo.Services.Implementation.Services
         {
             return await _context.Empresa.FindAsync(empresaId);
         }
+
+        
 
     }
 }

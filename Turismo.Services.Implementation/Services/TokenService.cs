@@ -58,7 +58,7 @@ namespace Turismo.Services.Implementation.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(3),
+                Expires = DateTime.UtcNow.AddMinutes(20),
                 SigningCredentials = new SigningCredentials(rsaKey, SecurityAlgorithms.RsaSha256),
                 Issuer = issuer,
                 Audience = audience,

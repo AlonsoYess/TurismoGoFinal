@@ -17,5 +17,7 @@ namespace Turismo.Services.Interfaces.Interfaces
         Task<ItinerarioCreado> ActualizarItinerarioAsync(ActualizarItinerario itinerario);
         Task<bool> BorrarItinerarioAsync(int itinerarioId);
         Task<bool> ValidarItinerarioPorFechasAsync(int actividadId, int dia);
+
+        Task<IEnumerable<ItinerarioCreado>> ObtenerItinerarios();
     }
 }

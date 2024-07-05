@@ -22,4 +22,8 @@
     <ProjectReference Include="..\Turismo.Services.Implementation\Turismo.Services.Implementation.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Imagenes\" />
+  </ItemGroup>
+
 </Project>

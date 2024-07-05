@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Turismo.Services.Implementation.Services;
 using Turismo.Services.Interfaces.Interfaces;
 using Turismo.Services.Interfaces.Requests;
 
@@ -7,6 +10,7 @@ namespace Turismo.Presentation.WebServices.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ItinerarioController : ControllerBase
     {
 
@@ -109,6 +113,9 @@ namespace Turismo.Presentation.WebServices.Controllers
             }
         }
 
+
+
+
         [HttpGet("ValidarItinerarioPorFechas/{actividadId}/{dia}")]
         public async Task<IActionResult> ValidarItinerarioPorFechas(int actividadId, int dia)
         {
@@ -122,5 +129,21 @@ namespace Turismo.Presentation.WebServices.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("ObtenerItinerarios")]
+        public async Task<IActionResult> ObtenerItinerarios()
+        {
+            try
+            {
+                var resultado = await _itinerarioService.ObtenerItinerarios();
+                return Ok(resultado);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
     }
 }

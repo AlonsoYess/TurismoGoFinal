@@ -14,6 +14,8 @@ namespace Turismo.Domain.Entities.Entidades
         public string? Apellido { get; set; }
         public string? NroDocumento { get; set; }
 
+        public int TipoUsuario { get; set; }
+
         public List<RefrescarToken> RefreshTokens { get; set; }
     }
 }

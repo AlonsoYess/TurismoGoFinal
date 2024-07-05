@@ -27,7 +27,9 @@ namespace Turismo.Services.Interfaces.Responses
 
         public decimal Precio { get; set; }
         public int Capacidad { get; set; }
+        public string Imagen {  get; set; }
 
+        public string ImagenURL {  get; set; }
         public List<ReservaCreada> Reservas { get; set; }
         public List<ReseniaCreada> Resenia { get; set; }
         public List<ItinerarioCreado> Itinerarios { get; set; }

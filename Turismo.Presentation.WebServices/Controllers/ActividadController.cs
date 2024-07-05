@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Turismo.Presentation.WebServices.DTO;
 using Turismo.Services.Interfaces.Interfaces;
 using Turismo.Services.Interfaces.Requests;
 
@@ -7,6 +10,7 @@ namespace Turismo.Presentation.WebServices.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ActividadController : ControllerBase
     {
         private readonly IActividadService _actividadService;
@@ -16,8 +20,22 @@ namespace Turismo.Presentation.WebServices.Controllers
             _actividadService = actividadService;
         }
 
+        private async Task<string> GuardarImagenAsync(IFormFile imagen)
+        {
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "imagenes");
+            var fileName = $"{Guid.NewGuid().ToString()}{Path.GetExtension(imagen.FileName)}";
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await imagen.CopyToAsync(stream);
+            }
+
+            return fileName;
+        }
+
         [HttpPost("CrearActividad")]
-        public async Task<IActionResult> CrearActividad([FromBody] CrearActividad crearActividad)
+        public async Task<IActionResult> CrearActividad([FromForm] CrearActividadDTO crearActividad)
         {
             if (!ModelState.IsValid)
             {
@@ -26,7 +44,21 @@ namespace Turismo.Presentation.WebServices.Controllers
 
             try
             {
-                var resultado = await _actividadService.CrearActividadAsync(crearActividad);
+                var imagenNombre = await GuardarImagenAsync(crearActividad.Imagen);
+
+                var actividadFinal = new CrearActividad {
+                    EmpresaId = crearActividad.EmpresaId,
+                    Titulo = crearActividad.Titulo,
+                    Descripcion = crearActividad.Descripcion,
+                    Destino = crearActividad.Destino,
+                    FechaInicio = crearActividad.FechaInicio,
+                    FechaFin = crearActividad.FechaFin,
+                    Precio = crearActividad.Precio,
+                    Capacidad = crearActividad.Capacidad,
+                    Imagen = imagenNombre
+                };
+
+                var resultado = await _actividadService.CrearActividadAsync(actividadFinal);
                 return Ok( resultado);
             }
             catch (Exception ex)
@@ -35,8 +67,8 @@ namespace Turismo.Presentation.WebServices.Controllers
             }
         }
 
-        [HttpPut("ActualizarActividad")]
-        public async Task<IActionResult> ActualizarActividad([FromBody] ActualizarActividad actualizarActividad)
+        [HttpPost("ActualizarActividad")]
+        public async Task<IActionResult> ActualizarActividad([FromForm] ActualizarActividadDTO actualizarActividad)
         {
             
 
@@ -47,7 +79,31 @@ namespace Turismo.Presentation.WebServices.Controllers
 
             try
             {
-                var resultado = await _actividadService.ActualizarActividadAsync(actualizarActividad);
+                string imagenNombre = string.Empty;
+                if (actualizarActividad.Imagen != null)
+                {
+                     imagenNombre = await GuardarImagenAsync(actualizarActividad.Imagen);
+                }
+                else
+                {
+                    imagenNombre = actualizarActividad.ImagenAnterior;
+                }
+
+                var actividadFinal = new ActualizarActividad
+                {
+                    Id = actualizarActividad.Id,
+                    EmpresaId = actualizarActividad.EmpresaId,
+                    Titulo = actualizarActividad.Titulo,
+                    Descripcion = actualizarActividad.Descripcion,
+                    Destino = actualizarActividad.Destino,
+                    FechaInicio = actualizarActividad.FechaInicio,
+                    FechaFin = actualizarActividad.FechaFin,
+                    Precio = actualizarActividad.Precio,
+                    Capacidad = actualizarActividad.Capacidad,
+                    Imagen = imagenNombre
+                };
+
+                var resultado = await _actividadService.ActualizarActividadAsync(actividadFinal);
                 return Ok(resultado);
             }
             catch (KeyNotFoundException ex)

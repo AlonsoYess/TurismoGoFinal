@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Security.Cryptography;
+using System.Text;
 using Turismo.Domain.Entities.Entidades;
 using Turismo.Infraestructure.EFDataContext.Context;
 using Turismo.Services.Implementation.Services;
@@ -42,6 +45,16 @@ namespace Turismo.Presentation.WebServices
                                       .AllowAnyHeader());
             });
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigins",
+                    builder => builder
+                        .WithOrigins("http://localhost:9000") 
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials());
+            });
+
 
             services.AddControllers();
             services.AddEndpointsApiExplorer();
@@ -63,33 +76,51 @@ namespace Turismo.Presentation.WebServices
             builder.AddEntityFrameworkStores<DBContext>();
             builder.AddSignInManager<SignInManager<Usuario>>();
 
-            services.AddAuthentication(options =>
+            
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+               .AddJwtBearer(options =>
+                   options.TokenValidationParameters = new TokenValidationParameters
+                   {
+                       ValidateIssuer = false,
+                       ValidateAudience = false,
+                       ValidateLifetime = true,
+                       ValidateIssuerSigningKey = true,
+                       IssuerSigningKey = new SymmetricSecurityKey(
+                       Encoding.UTF8.GetBytes(Configuration["Token:Key"])),
+                       ClockSkew = TimeSpan.Zero
+                   }
+               );
+
+            services.AddSwaggerGen(c =>
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.RequireHttpsMetadata = false;
-                options.SaveToken = true;
-                options.TokenValidationParameters = new TokenValidationParameters
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });
+
+                // Configurar la seguridad de Swagger para JWT
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new RsaSecurityKey(_rsa), // Utiliza la clave RSA en lugar de la clave simétrica
-                    ValidateIssuer = true,
-                    ValidIssuer = Configuration["Token:Issuer"],
-                    ValidateAudience = true,
-                    ValidAudience = Configuration["Token:Audience"],
-                    ValidateLifetime = false,
-                    //ClockSkew = TimeSpan.Zero, // Esto fuerza la expiración exacta del token
-                    //RequireExpirationTime = true,
-                    RequireSignedTokens = true,
-                    TokenDecryptionKey = new RsaSecurityKey(_rsa), // Agrega la clave de descifrado
-                    ValidateTokenReplay = true,
-                    SaveSigninToken = true/*,
-                    ValidIssuers = new[] { Configuration["Token:Issuer"] },
-                    ValidAudiences = new[] { Configuration["Token:Audience"] }*/
-                };
+                    Description = "JWT Authorization header using the Bearer scheme. Example: 'Bearer {token}'",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                // Configurar el requerimiento de seguridad para Swagger
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] { }
+                    }
+                });
             });
 
         }
@@ -100,13 +131,25 @@ namespace Turismo.Presentation.WebServices
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API V1");
+                    c.RoutePrefix = string.Empty;
+                });
             }
 
             app.UseHttpsRedirection();
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                Path.Combine(Directory.GetCurrentDirectory(), "Imagenes")),
+                RequestPath = "/Imagenes"
+            });
+
             app.UseRouting();
 
-            app.UseCors("AllowAllOrigins");
+            app.UseCors("AllowSpecificOrigins");
 
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>

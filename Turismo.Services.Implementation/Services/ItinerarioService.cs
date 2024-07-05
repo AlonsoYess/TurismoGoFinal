@@ -163,6 +163,21 @@ namespace Turismo.Services.Implementation.Services
             }
         }
 
-        
+
+        public async Task<IEnumerable<ItinerarioCreado>> ObtenerItinerarios()
+        {
+            var itinerarios = await _context.Itinerario.Include(x => x.Actividad).ToListAsync();
+
+            return itinerarios.Select(x => new ItinerarioCreado
+            {
+                Id = x.Id,
+                Dia = x.Dia,
+                Descripcion = x.Descripcion,
+                Actividad = x.Actividad.Titulo,
+                ActividadId = x.ActividadId
+            });
+        }
+
+
     }
 }

@@ -37,6 +37,9 @@ namespace Turismo.Domain.Entities.Entidades
         [Range(1, int.MaxValue, ErrorMessage = "Valor invalido")]
         public int Capacidad { get; set; }
 
+        [Required(ErrorMessage = "Es obligatorio una Imagen")]
+        public string Imagen { get; set; }
+
         public List<Reserva> Reservas { get; set; }
         public List<Resenia> Resenia { get; set; }
         public List<Itinerario> Itinerarios { get; set; }

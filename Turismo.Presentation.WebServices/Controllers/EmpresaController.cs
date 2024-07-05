@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Turismo.Services.Interfaces.Interfaces;
 using Turismo.Services.Interfaces.Requests;
@@ -8,6 +10,7 @@ namespace Turismo.Presentation.WebServices.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class EmpresaController : ControllerBase
     {
         private readonly IEmpresaService _empresaService;
@@ -85,8 +88,10 @@ namespace Turismo.Presentation.WebServices.Controllers
             }
         }
 
+        
         [HttpGet]
         [Route("ObtenerTodasLasEmpresasAsync")]
+        
         public async Task<ActionResult<List<EmpresaCreada>>> ObtenerTodasLasEmpresasAsync()
         {
             try

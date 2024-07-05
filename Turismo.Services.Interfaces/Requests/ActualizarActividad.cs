@@ -39,5 +39,7 @@ namespace Turismo.Services.Interfaces.Requests
         [Required(ErrorMessage = "El campo Capacidad es obligatorio")]
         [Range(1, int.MaxValue, ErrorMessage = "Valor invalido")]
         public int Capacidad { get; set; }
+        [Required(ErrorMessage = "Es obligatorio una Imagen")]
+        public string Imagen { get; set; }
     }
 }

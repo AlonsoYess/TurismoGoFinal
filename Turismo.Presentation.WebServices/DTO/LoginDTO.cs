@@ -6,7 +6,7 @@ namespace Turismo.Presentation.WebServices.DTO
     {
         [Required(ErrorMessage = "El NroDocumento es obligatorio")]
         [Display(Name = "Usuario")]
-        public string NroDocumento { get; set; }
+        public string Usuario { get; set; }
 
         [Required(ErrorMessage = "La contraseña es obligatoria")]
         [DataType(DataType.Password)]
@@ -15,5 +15,10 @@ namespace Turismo.Presentation.WebServices.DTO
 
         [Display(Name = "Recordar datos?")]
         public bool RememberMe { get; set; }
+
+        [Required]
+        public int TipoUsuario { get; set; }
+
+
     }
 }

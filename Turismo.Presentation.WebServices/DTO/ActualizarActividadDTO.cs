@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Turismo.Domain.Entities.Entidades;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Turismo.Services.Interfaces.Requests
+namespace Turismo.Presentation.WebServices.DTO
 {
-    public class CrearActividad
+    public class ActualizarActividadDTO
     {
+        [Required]
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "Debe seleccionar una empresa")]
         public int EmpresaId { get; set; }
@@ -37,8 +33,9 @@ namespace Turismo.Services.Interfaces.Requests
         [Required(ErrorMessage = "El campo Capacidad es obligatorio")]
         [Range(1, int.MaxValue, ErrorMessage = "Valor invalido")]
         public int Capacidad { get; set; }
+        
+        public IFormFile Imagen { get; set; }
 
-        [Required( ErrorMessage ="Es obligatorio una Imagen")]
-        public string Imagen {  get; set; }
+        public string ImagenAnterior { get; set; }
     }
 }
