@@ -30,8 +30,13 @@ namespace Turismo.Services.Interfaces.Responses
         public string Imagen {  get; set; }
 
         public string ImagenURL {  get; set; }
+        
         public List<ReservaCreada> Reservas { get; set; }
         public List<ReseniaCreada> Resenia { get; set; }
         public List<ItinerarioCreado> Itinerarios { get; set; }
+
+        public double PromedioCalificacion { get; set; }
+
+        public int TotalCalificaciones { get; set; }
     }
 }

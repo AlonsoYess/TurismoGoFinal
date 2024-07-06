@@ -224,6 +224,7 @@ namespace Turismo.Services.Implementation.Services
             {
                 Usuario = r.Usuario.Nombre,
                 Actividad = r.Actividad.Titulo,
+                ActividadId = r.Actividad.Id,
                 FechaReserva = r.FechaReserva.ToShortDateString(),
                 Cantidad = r.Cantidad,
                 Estado = r.Estado

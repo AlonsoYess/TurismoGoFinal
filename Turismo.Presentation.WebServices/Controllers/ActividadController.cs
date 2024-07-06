@@ -10,7 +10,7 @@ namespace Turismo.Presentation.WebServices.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    
     public class ActividadController : ControllerBase
     {
         private readonly IActividadService _actividadService;
@@ -35,6 +35,7 @@ namespace Turismo.Presentation.WebServices.Controllers
         }
 
         [HttpPost("CrearActividad")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> CrearActividad([FromForm] CrearActividadDTO crearActividad)
         {
             if (!ModelState.IsValid)
@@ -68,6 +69,7 @@ namespace Turismo.Presentation.WebServices.Controllers
         }
 
         [HttpPost("ActualizarActividad")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> ActualizarActividad([FromForm] ActualizarActividadDTO actualizarActividad)
         {
             
@@ -117,6 +119,7 @@ namespace Turismo.Presentation.WebServices.Controllers
         }
 
         [HttpDelete("BorrarActividad/{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> BorrarActividad(int id)
         {
             try

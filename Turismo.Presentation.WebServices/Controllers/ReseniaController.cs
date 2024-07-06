@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Turismo.Services.Interfaces.Interfaces;
 using Turismo.Services.Interfaces.Requests;
@@ -16,7 +18,7 @@ namespace Turismo.Presentation.WebServices.Controllers
         {
             _reseniaService = reseniaService;
         }
-
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("CrearResenia")]
         public async Task<IActionResult> CrearResenia([FromBody] CrearResenia crearResenia)
         {
@@ -81,7 +83,7 @@ namespace Turismo.Presentation.WebServices.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPut("ActualizarResenia")]
         public async Task<IActionResult> ActualizarResenia([FromBody] ActualizarResenia actualizarResenia)
         {
@@ -104,7 +106,7 @@ namespace Turismo.Presentation.WebServices.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpDelete("BorrarResenia/{reseniaId}")]
         public async Task<IActionResult> BorrarResenia(int reseniaId)
         {

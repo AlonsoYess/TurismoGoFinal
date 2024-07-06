@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Turismo.Services.Interfaces.Interfaces;
 using Turismo.Services.Interfaces.Requests;
@@ -18,6 +20,7 @@ namespace Turismo.Presentation.WebServices.Controllers
 
 
         [HttpPost("CrearReserva")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> CrearReserva([FromBody] CrearReserva crearReserva)
         {
             if (!ModelState.IsValid)
@@ -97,6 +100,7 @@ namespace Turismo.Presentation.WebServices.Controllers
         }
 
         [HttpPut("ActualizarEstadoReserva/{reservaId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> ActualizarEstadoReserva(int reservaId, [FromBody] string estado)
         {
             if (string.IsNullOrEmpty(estado))

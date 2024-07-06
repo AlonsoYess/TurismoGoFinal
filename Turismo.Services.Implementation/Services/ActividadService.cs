@@ -252,7 +252,8 @@ namespace Turismo.Services.Implementation.Services
                 Imagen = actividad.Imagen,
                 Reservas = actividad.Reservas.Select(r => new ReservaCreada
                 {
-                    Usuario = r.Usuario.Nombre,
+                    Usuario = r.Usuario.Nombre + " " + r.Usuario.Apellido,
+                    UsuarioId = r.Usuario.Id,
                     //Actividad = actividad.Titulo,
                     FechaReserva = r.FechaReserva.ToString("MM/dd/yyyy"),
                     Cantidad = r.Cantidad,
@@ -281,9 +282,10 @@ namespace Turismo.Services.Implementation.Services
         {
             var actividades = await _context.Actividad
                 .Include(a => a.Empresa)
-                .Include(a => a.Reservas)
-                .Include(a => a.Resenia)
+                .Include(a => a.Reservas).ThenInclude(r => r.Usuario)
+                .Include(a => a.Resenia).ThenInclude(r => r.Usuario)
                 .Include(a => a.Itinerarios)
+                
                 .ToListAsync();
 
             return actividades.Select(a => new ActividadCreada
@@ -291,6 +293,8 @@ namespace Turismo.Services.Implementation.Services
                 Id = a.Id,
                 EmpresaId = a.Empresa.Id,
                 Empresa = a.Empresa.Nombre,
+                PromedioCalificacion = a.Resenia != null && a.Resenia.Any() ? Math.Round(a.Resenia.Average(x => x.Calificacion) , 2) : 0,
+                TotalCalificaciones = a.Resenia != null ? a.Resenia.Count() : 0,
                 Titulo = a.Titulo,
                 Descripcion = a.Descripcion,
                 Destino = a.Destino,
@@ -302,7 +306,8 @@ namespace Turismo.Services.Implementation.Services
                 ImagenURL = Path.Combine(Directory.GetCurrentDirectory(), "imagenes", a.Imagen),
                 Reservas = a.Reservas.Select(r => new ReservaCreada
                 {
-                    Usuario = r.Usuario.Nombre,
+                    Usuario = r.Usuario.Nombre + " " + r.Usuario.Apellido,
+                    UsuarioId = r.Usuario.Id,
                     //Actividad = actividad.Titulo,
                     FechaReserva = r.FechaReserva.ToString("MM/dd/yyyy"),
                     Cantidad = r.Cantidad,
